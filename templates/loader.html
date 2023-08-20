@@ -1,0 +1,77 @@
+<style>
+  .loading {
+    /* background-color: #ffffff; */
+  position: absolute;
+  top: 85%;
+  left: 65%;
+  transform: translate(-50%, -50%) scale(5);
+}
+.loading svg polyline {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.loading svg polyline#back {
+  stroke: rgba(110,123,242,0.3);
+}
+.loading svg polyline#front {
+  stroke: #0c9fce;
+  stroke-dasharray: 12, 36;
+  stroke-dashoffset: 48;
+  animation: dash 1s linear infinite;
+}
+@-moz-keyframes dash {
+  62.5% {
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@-webkit-keyframes dash {
+  62.5% {
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@-o-keyframes dash {
+  62.5% {
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dash {
+  62.5% {
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+</style>
+<div class="loading"> 
+  <svg width="100px" height="120px">
+    <polyline id="back" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+    <polyline id="front" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+  </svg>
+</div>
+  <script>
+    document.onreadystatechange = function() {
+       if (document.readyState !== "complete") {
+           document.querySelector(
+             "body").style.visibility = "hidden";
+           document.querySelector(
+             ".loading").style.visibility = "visible";
+       } else {
+           document.querySelector(
+             ".loading").style.display = "none";
+           document.querySelector(
+             "body").style.visibility = "visible";
+       }
+   };
+</script>

@@ -1,0 +1,211 @@
+{% extends '../base.html' %} {% load django_bootstrap5 %}
+{% load static %} {%block bodyblock%}
+
+<!-- Landing Page Section -->
+<div class="container-fluid px-0 mx-0 homediv">
+  <div class="container col-lg-11 py-1 my-3">
+  <div class="row">
+    <div class="col border rounded-3 border-light  p-3">
+       
+        <div class="row">
+          {% if request.user.is_patient %}
+          <div class="col">
+            <div class="d-flex justify-content-center mt-5">
+              {% if request.user.userdetail.profile_pic %}
+
+            <img src="{{request.user.userdetail.profile_pic.url}}" height="230" width="230" class="img rounded-circle text-center" alt="profile picture">
+            {%else%}
+    
+              <img src="{% static 'images/userpng.png'%}" height="230" width="230" class="img rounded-circle text-center" alt="profile picture">
+              {%endif%}
+          </div>
+          <div class="d-flex justify-content-center">
+            <div class="btn-group">
+              <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#exampleModal"  ><i class="fa-solid fa-camera"></i> &nbsp; Edit Profile</button>
+              <a href="{%url 'qrapp:qr'%}" class="btn btn-outline-secondary mt-3 ms-1" title="Your Qrcode"><i class="fa-solid fa-qrcode"></i></a>
+
+            </div>
+          </div>
+          </div>
+        
+          <div class="col p-2">
+            <h4 class="fw-light">User Information</h4><br>
+            <h6 class="mb-3"><span class="fw-light">Email: </span> {{request.user.email}}</h6>
+            
+            
+            <h6 class="mb-3"><span class="fw-light">Fullname: </span> {{request.user.userdetail.first_name}} {{request.user.userdetail.last_name}}  &nbsp; <i title="verified user" class="fa-solid fa-circle-check text-success"></i></h6>
+            <h6 class="mb-3"><span class="fw-light">Contact: </span> {{request.user.userdetail.contact}}  </h6>
+            <h6 class="mb-3"><span class="fw-light">Date of Birth: </span> {{request.user.userdetail.dob}} </h6>
+            <h6 class="mb-3"><span class="fw-light">Height: </span> {{request.user.userdetail.height}} ft. </h6>
+            <h6 class="mb-3"><span class="fw-light">Weight: </span> {{request.user.userdetail.weight}} kg.</h6>
+            <h6 class="mb-3"><span class="fw-light">Age:</span> {{request.user.userdetail.get_age}} years </h6>
+            <h6 class="mb-3"><span class="fw-light">BMI: </span>{{request.user.userdetail.get_bmi}} </h6>
+            
+
+          </div>
+          
+        </div>
+        {%else%}
+        <div class="col">
+          <div class="d-flex justify-content-center mt-4">
+           
+            <img src="{% static 'images/hospng.png'%}" height="230" width="230" class="img rounded-circle text-center" alt="profile picture">
+          
+           
+        </div>
+        
+        </div>
+      
+        <div class="col p-2 mt-5">
+          <h4 class="fw-light">Institute Information</h4><br>
+          <h6 class="mb-3"><span class="fw-light">Name: </span> {{request.user.first_name}} {{request.user.last_name}} &nbsp; <i title="verified user" class="fa-solid fa-circle-check text-success"></i></h6>
+          <h6 class="mb-3"><span class="fw-light">Email: </span> {{request.user.email}}</h6>
+          <div class="">
+            Document: <a  href="{{request.user.document.url}}" download>View Document</a>
+          </div>
+  
+
+        </div>
+        
+      </div>
+
+          {%endif%}
+       
+
+    </div>
+    <div class="col ">
+     {% if request.user.is_patient %}
+      <div class="card mb-3">
+        <div class="card-header bg-primary p-3">
+          <h4 class="fw-light text-white mb-0"><i class="fa-solid fa-pills"></i> &nbsp; Recent Medication Schedule</h4>
+        </div>
+        <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: auto">
+          
+          <table class="table mb-3">
+            <thead>
+              <tr class="text-center">
+                <td scope="col">S.N.</td>
+                <td scope="col">Medicine</td>
+                <td scope="col">Dose</td>
+                <td scope="col">Time</td>
+                <td scope="col">Empty Stomach</td>
+                
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in obj_list %}
+              <tr class="fw-normal text-center">
+                <th>
+                 
+                  <span class="ms-2">{{forloop.counter}}</span>
+                </th>
+                <td class="align-middle">
+                  <span>{{i.medicine.name}}</span>
+                </td>
+                <td class="align-middle">
+                  <span>{{i.medicine.dose}} mg</span>
+                </td>
+                <td class="align-middle">
+                  <span>{{i.timesaday}} </span>
+                </td>
+                <td class="align-middle">
+                  {% if i.emptyStomach %}
+                  <i class="fa-solid text-success fa-square-check" title="take on empty stomach"></i>
+
+                  {%else%}
+                  <i class="fa-solid text-danger fa-square-xmark" title="take after eating something"></i>
+                  {%endif%}
+                </td>
+               
+              </tr>
+              {%empty%}
+              <caption class="text-center">No assigned schedule. </caption>
+              {%endfor%}
+              
+             
+   
+              
+           
+            </tbody>
+          </table>
+
+          
+        </div>
+      
+       
+      </div>
+      {%endif%}
+
+      <div class="p-3">
+        <h4 class="fw-light">Your Articles</h4><br>
+   {% for object in articles %}
+   <div class="row mb-3">
+    <div class="col-md-10">
+      {% if object.status == 'published' %}
+       <a href="{{object.get_absolute_url}}" class="text-decoration-none text-dark">
+          <h6>{{object.title}} &nbsp;
+            
+            <i title="approved & published" class="text-primary fa-solid fa-circle-check fs-6"></i>
+           
+           
+          </h6>
+          
+          <small class="fw-light">{{object.excerpt}}</small>
+         </a>
+         {% else %}
+         <a href="{% url 'articles:updatearticle' object.pk %}" class="text-decoration-none text-dark">
+            <h5>{{object.title}} &nbsp;
+              
+             
+              <i title="under approval" class="text-warning fa-solid fa-hourglass-start fs-6"></i>
+             
+            </h5>
+            
+            <p class="fw-light">{{object.excerpt}}</p>
+           </a>
+         {% endif %}
+    </div>
+    <div class="col-md-2">
+       <img src="{{object.image.url}}" class="img-fluid mb-2" alt="{{object.title}}">
+    </div>
+     
+   </div><hr class="text-light">
+   {% empty %}
+   <li>No objects yet.</li>
+   {% endfor %}
+      </div>
+
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" method="post">
+
+          {% csrf_token %}
+        <!-- {{ form.as_floating }} -->
+        {% bootstrap_form form layout='floating'  %}
+       
+      
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+{%endblock%}
